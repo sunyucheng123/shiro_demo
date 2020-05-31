@@ -5,6 +5,7 @@ import com.syc.util.JsonResult;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/user")
 public class UserController {
 
+    @RequestMapping("/index")
+    public String index(){
+
+        return "login";
+    }
+
     @RequestMapping("/login")
     @ResponseBody
     public JsonResult login(User user){
@@ -26,7 +33,7 @@ public class UserController {
         return new JsonResult(token);
     }
 
-
+    //根据角色做权限验证
     @RequiresRoles(value = {"admin","vip"},logical = Logical.OR)
     @RequestMapping("/testRoles")
     @ResponseBody
@@ -34,4 +41,14 @@ public class UserController {
 
         return "success admin";
     }
+
+    //根据权限进行shiro验证
+    @RequiresPermissions("sys:select")
+    @RequestMapping("/testPermission")
+    @ResponseBody
+    public String testPermission(){
+
+        return "success testPermission";
+    }
+
 }
